@@ -116,29 +116,24 @@ namespace PackageManagement.Tests.EnvDTE
 			CreateProjectItems();
 			msbuildProject.AddFile(@"Test.cs");
 			
-			var itemsList = new List<DTE.ProjectItem>();
-			itemsList.AddRange(projectItems);
-			
 			var expectedItems = new string[] {
 				"Test.cs"
 			};
 			
-			ProjectItemCollectionAssert.AreEqual(expectedItems, itemsList);
+			ProjectItemCollectionAssert.AreEqual(expectedItems, projectItems);
 		}
 		
 		[Test]
-		public void GetEnumerator_UseUntypedEnumeratorProjectHasOneFile_OneFileReturned()
+		public void GetEnumerator_ProjectHasOneFile_OneFileReturned()
 		{
 			CreateProjectItems();
 			msbuildProject.AddFile(@"Program.cs");
-			
-			var enumerable = projectItems as IEnumerable;
 			
 			var expectedFiles = new string[] {
 				"Program.cs"
 			};
 			
-			ProjectItemCollectionAssert.AreEqual(expectedFiles, enumerable);
+			ProjectItemCollectionAssert.AreEqual(expectedFiles, projectItems);
 		}
 		
 		[Test]
@@ -324,6 +319,17 @@ namespace PackageManagement.Tests.EnvDTE
 			
 			bool contains = ex.Message.Contains("'test.cs'");
 			Assert.IsTrue(contains);
+		}
+		
+		[Test]
+		public void Count_ProjectHasOneFile_ReturnsOne()
+		{
+			CreateProjectItems();
+			msbuildProject.AddFile(@"Test.cs");
+			
+			int count = projectItems.Count;
+			
+			Assert.AreEqual(1, count);
 		}
 	}
 }

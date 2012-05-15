@@ -24,6 +24,11 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 			this.ContainingProject = project;
 			this.ProjectItems = new DirectoryProjectItems(this);
 			CreateProperties();
+			Kind = Constants.VsProjectItemKindPhysicalFile;
+		}
+		
+		public ProjectItem()
+		{
 		}
 		
 		void CreateProperties()
@@ -32,15 +37,21 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 			Properties = new Properties(propertyFactory);
 		}
 		
-		public string Name {
+		public virtual string Name {
 			get { return Path.GetFileName(projectItem.Include); }
 		}
 		
-		public Properties Properties { get; private set; }
-		public Project ContainingProject  { get; private set; }
-		public ProjectItems ProjectItems { get; private set; }
+		public virtual string Kind { get; set; }
 		
-		internal object GetProperty(string name)
+		public Project SubProject {
+			get { return null; }
+		}
+		
+		public virtual Properties Properties { get; private set; }
+		public virtual Project ContainingProject  { get; private set; }
+		public virtual ProjectItems ProjectItems { get; private set; }
+		
+		internal virtual object GetProperty(string name)
 		{
 			if (name == CopyToOutputDirectoryPropertyName) {
 				return GetCopyToOutputDirectory();
@@ -57,7 +68,7 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 			return (UInt32)projectItem.CopyToOutputDirectory;
 		}
 		
-		internal void SetProperty(string name, object value)
+		internal virtual void SetProperty(string name, object value)
 		{
 			if (name == CopyToOutputDirectoryPropertyName) {
 				SetCopyToOutputDirectory(value);
@@ -78,7 +89,7 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 			return (CopyToOutputDirectory)Enum.Parse(typeof(CopyToOutputDirectory), valueAsString);
 		}
 		
-		internal bool IsMatchByName(string name)
+		internal virtual bool IsMatchByName(string name)
 		{
 			return String.Equals(this.Name, name, StringComparison.InvariantCultureIgnoreCase);
 		}
@@ -89,9 +100,16 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 			return IsMatchByName(directory);
 		}
 		
-		internal ProjectItemRelationship GetRelationship(SD.ProjectItem msbuildProjectItem)
+		internal virtual ProjectItemRelationship GetRelationship(SD.ProjectItem msbuildProjectItem)
 		{
 			return new ProjectItemRelationship(this, msbuildProjectItem);
+		}
+		
+		/// <summary>
+		/// TODO: delete project item from project
+		/// </summary>
+		public void Delete()
+		{
 		}
 	}
 }
