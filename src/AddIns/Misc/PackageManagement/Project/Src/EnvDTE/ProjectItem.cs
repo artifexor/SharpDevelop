@@ -105,11 +105,10 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 			return new ProjectItemRelationship(this, msbuildProjectItem);
 		}
 		
-		/// <summary>
-		/// TODO: delete project item from project
-		/// </summary>
 		public void Delete()
 		{
+			ContainingProject.DeleteFile(projectItem.FileName);
+			ContainingProject.Save();
 		}
 	}
 }
