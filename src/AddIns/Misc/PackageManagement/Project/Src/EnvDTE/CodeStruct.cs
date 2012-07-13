@@ -2,11 +2,23 @@
 // This code is distributed under the GNU LGPL (for details please see \doc\license.txt)
 
 using System;
+using ICSharpCode.SharpDevelop.Dom;
 
 namespace ICSharpCode.PackageManagement.EnvDTE
 {
-	public class CodeStruct : CodeElement
+	public class CodeStruct : CodeType
 	{
-		public vsCMAccess Access { get; set; }
+		public CodeStruct()
+		{
+		}
+		
+		public CodeStruct(IProjectContent projectContent, IClass c)
+			: base(projectContent, c)
+		{
+		}
+		
+		public override vsCMElement Kind {
+			get { return vsCMElement.vsCMElementStruct; }
+		}
 	}
 }

@@ -2,10 +2,13 @@
 // This code is distributed under the GNU LGPL (for details please see \doc\license.txt)
 
 using System;
+using ICSharpCode.PackageManagement;
 using ICSharpCode.PackageManagement.EnvDTE;
+using ICSharpCode.SharpDevelop.Dom;
 using ICSharpCode.SharpDevelop.Project;
 using NUnit.Framework;
 using PackageManagement.Tests.Helpers;
+using Rhino.Mocks;
 
 namespace PackageManagement.Tests.EnvDTE
 {
@@ -14,11 +17,35 @@ namespace PackageManagement.Tests.EnvDTE
 	{
 		Project project;
 		TestableProject msbuildProject;
+		ProjectContentHelper helper;
+		IPackageManagementProjectService fakeProjectService;
+		IPackageManagementFileService fakeFileService;
 		
 		void CreateProject()
 		{
 			msbuildProject = ProjectHelper.CreateTestProject();
-			project = new Project(msbuildProject);
+			helper = new ProjectContentHelper();
+			
+			fakeProjectService = MockRepository.GenerateStub<IPackageManagementProjectService>();
+			fakeProjectService.Stub(service => service.GetProjectContent(msbuildProject)).Return(helper.ProjectContent);
+			
+			fakeFileService = MockRepository.GenerateStub<IPackageManagementFileService>();
+			project = new Project(msbuildProject, fakeProjectService, fakeFileService);
+		}
+		
+		void AddClassToProjectContent(string className)
+		{
+			helper.AddClassToProjectContent(className);
+		}
+		
+		void SetProjectForProjectContent()
+		{
+			helper.SetProjectForProjectContent(msbuildProject);
+		}
+		
+		void SetDifferentProjectForProjectContent()
+		{
+			helper.SetProjectForProjectContent(ProjectHelper.CreateTestProject());
 		}
 		
 		[Test]
@@ -177,6 +204,51 @@ namespace PackageManagement.Tests.EnvDTE
 			string outputPath = (string)activeConfig.Properties.Item("OutputPath").Value;
 			
 			Assert.AreEqual(@"bin\debug\", outputPath);
+		}
+		
+		[Test]
+		public void CodeModel_NoTypesInProjectAndCallCodeTypeFromFullName_ReturnsNull()
+		{
+			CreateProject();
+			
+			CodeType codeType = project.CodeModel.CodeTypeFromFullName("UnknownTypeName");
+			
+			Assert.IsNull(codeType);
+		}
+		
+		[Test]
+		public void CodeModel_ClassExistsInProjectContentAndCallCodeTypeFromFullName_ReturnsNonCodeType()
+		{
+			CreateProject();
+			AddClassToProjectContent("Tests.MyClass");
+			
+			CodeType codeType = project.CodeModel.CodeTypeFromFullName("Tests.MyClass");
+			
+			Assert.IsNotNull(codeType);
+		}
+		
+		[Test]
+		public void CodeModel_ClassExistsInProjectContentForProject_ReturnsClassWithLocationSetToInProject()
+		{
+			CreateProject();
+			SetProjectForProjectContent();
+			helper.AddClassToCompletionEntries(String.Empty, "MyClass");
+			
+			CodeElement element = project.CodeModel.CodeElements.FirstOrDefault();
+			
+			Assert.AreEqual(vsCMInfoLocation.vsCMInfoLocationProject, element.InfoLocation);
+		}
+		
+		[Test]
+		public void CodeModel_ClassExistsInProjectContentForDifferentProject_ReturnsClassWithLocationSetToExternal()
+		{
+			CreateProject();
+			SetProjectForProjectContent();
+			helper.AddClassCompletionEntriesInDifferentProjectContent(String.Empty, "MyClass");
+			
+			CodeElement element = project.CodeModel.CodeElements.FirstOrDefault();
+			
+			Assert.AreEqual(vsCMInfoLocation.vsCMInfoLocationExternal, element.InfoLocation);
 		}
 	}
 }

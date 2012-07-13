@@ -2,6 +2,7 @@
 // This code is distributed under the GNU LGPL (for details please see \doc\license.txt)
 
 using System;
+using ICSharpCode.SharpDevelop.Dom;
 
 namespace ICSharpCode.PackageManagement.EnvDTE
 {
@@ -11,16 +12,27 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 		{
 		}
 		
-		public CodeElements Members {
-			get { throw new NotImplementedException(); }
+		public CodeProperty2(IProperty property)
+			: base(property)
+		{
 		}
 		
 		public vsCMPropertyKind ReadWrite { 
-			get { throw new NotImplementedException(); }
+			get { return GetPropertyKind(); }
+		}
+		
+		vsCMPropertyKind GetPropertyKind()
+		{
+			if (Property.CanSet && Property.CanGet) {
+				return vsCMPropertyKind.vsCMPropertyKindReadWrite;
+			} else if (Property.CanSet) {
+				return vsCMPropertyKind.vsCMPropertyKindWriteOnly;
+			}
+			return vsCMPropertyKind.vsCMPropertyKindReadOnly;
 		}
 		
 		public CodeElements Parameters {
-			get { throw new NotImplementedException(); }
+			get { return new CodePropertyParameters(Property); }
 		}
 	}
 }

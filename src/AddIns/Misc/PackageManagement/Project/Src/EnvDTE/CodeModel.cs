@@ -2,22 +2,44 @@
 // This code is distributed under the GNU LGPL (for details please see \doc\license.txt)
 
 using System;
+using ICSharpCode.SharpDevelop.Dom;
 
 namespace ICSharpCode.PackageManagement.EnvDTE
 {
 	public class CodeModel : MarshalByRefObject
 	{
-		public CodeModel()
+		IProjectContent projectContent;
+		CodeElementsInNamespace codeElements;
+		
+		public CodeModel(IProjectContent projectContent)
 		{
+			this.projectContent = projectContent;
 		}
 		
 		public CodeElements CodeElements {
-			get { throw new NotImplementedException(); }
+			get {
+				if (codeElements == null) {
+					codeElements = new CodeElementsInNamespace(projectContent, String.Empty);
+				}
+				return codeElements;
+			}
 		}
 		
 		public CodeType CodeTypeFromFullName(string name)
 		{
-			throw new NotImplementedException();
+			IClass matchedClass = projectContent.GetClass(name, 0);
+			if (matchedClass != null) {
+				return CreateCodeTypeForClass(matchedClass);
+			}
+			return null;
+		}
+		
+		CodeType CreateCodeTypeForClass(IClass c)
+		{
+			if (c.ClassType == ClassType.Interface) {
+				return new CodeInterface(projectContent, c);
+			}
+			return new CodeClass2(projectContent, c);
 		}
 	}
 }

@@ -199,7 +199,7 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 		}
 		
 		public virtual CodeModel CodeModel {
-			get { throw new NotImplementedException(); }
+			get { return new CodeModel(projectService.GetProjectContent(MSBuildProject) ); }
 		}
 		
 		public virtual ConfigurationManager ConfigurationManager {
@@ -255,6 +255,11 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 		internal string GetRelativePath(string path)
 		{
 			return FileUtility.GetRelativePath(MSBuildProject.Directory, path);
+		}
+		
+		internal IProjectBrowserUpdater CreateProjectBrowserUpdater()
+		{
+			return projectService.CreateProjectBrowserUpdater();
 		}
 	}
 }
