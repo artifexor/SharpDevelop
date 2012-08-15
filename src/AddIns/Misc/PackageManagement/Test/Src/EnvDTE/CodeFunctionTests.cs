@@ -49,6 +49,21 @@ namespace PackageManagement.Tests.EnvDTE
 			helper.AddDeclaringType(name);
 		}
 		
+		void AddParameterToMethod(string name)
+		{
+			helper.AddParameter(name);
+		}
+		
+		void AddParameterToMethod(string type, string name)
+		{
+			helper.AddParameter(type, name);
+		}
+		
+		void AddReturnTypeToMethod(string type)
+		{
+			helper.AddReturnTypeToMethod(type);
+		}
+		
 		[Test]
 		public void Access_PublicFunction_ReturnsPublic()
 		{
@@ -143,6 +158,93 @@ namespace PackageManagement.Tests.EnvDTE
 			
 			Assert.AreEqual(1, point.Line);
 			Assert.AreEqual(10, point.LineCharOffset);
+		}
+		
+		[Test]
+		public void Parameters_MethodHasNoParameters_ReturnsEmptyListOfItems()
+		{
+			CreatePublicFunction("MyClass.MyMethod");
+			
+			CodeElements parameters = codeFunction.Parameters;
+			
+			Assert.AreEqual(0, parameters.Count);
+		}
+		
+		[Test]
+		public void Parameters_MethodHasOneParameter_ReturnsOneCodeParameter()
+		{
+			AddParameterToMethod("test");
+			CreatePublicFunction("MyClass.MyMethod");
+			
+			CodeParameter parameter = codeFunction.Parameters.FirstCodeParameterOrDefault();
+			
+			Assert.AreEqual("test", parameter.Name);
+		}
+		
+		[Test]
+		public void Parameters_MethodHasOneStringParameter_ReturnsOneCodeParameterWithStringType()
+		{
+			AddParameterToMethod("System.String", "test");
+			CreatePublicFunction("MyClass.MyMethod");
+			
+			CodeParameter parameter = codeFunction.Parameters.FirstCodeParameterOrDefault();
+			
+			Assert.AreEqual("System.String", parameter.Type.AsFullName);
+		}
+		
+		[Test]
+		public void Parameters_MethodHasOneStringParameter_CreatesCodeParameterWithProjectContent()
+		{
+			AddParameterToMethod("System.String", "test");
+			CreatePublicFunction("MyClass.MyMethod");
+			
+			CodeParameter parameter = codeFunction.Parameters.FirstCodeParameterOrDefault();
+			
+			Assert.AreEqual("string", parameter.Type.AsString);
+		}
+		
+		[Test]
+		public void Parameters_MethodHasOneStringParameter_CreatesCodeParameterWithCodeTypeRefThatHasParameterAsParent()
+		{
+			AddParameterToMethod("System.String", "test");
+			CreatePublicFunction("MyClass.MyMethod");
+			
+			CodeParameter parameter = codeFunction.Parameters.FirstCodeParameterOrDefault();
+			
+			Assert.AreEqual(parameter, parameter.Type.Parent);
+		}
+		
+		[Test]
+		public void Type_MethodReturnsString_TypeRefHasSystemStringAsFullName()
+		{
+			CreatePublicFunction("MyClass.MyFunction");
+			AddReturnTypeToMethod("System.String");
+			
+			CodeTypeRef2 typeRef = codeFunction.Type;
+			
+			Assert.AreEqual("System.String", typeRef.AsFullName);
+		}
+		
+		[Test]
+		public void Type_MethodReturnsString_TypeRefUsesProjectContentFromMethod()
+		{
+			CreatePublicFunction("MyClass.MyFunction");
+			AddReturnTypeToMethod("System.String");
+			
+			CodeTypeRef2 typeRef = codeFunction.Type;
+			
+			Assert.AreEqual("string", typeRef.AsString);
+		}
+		
+		[Test]
+		public void Type_MethodReturnsString_TypeRefParentIsCodeFunction()
+		{
+			CreatePublicFunction("MyClass.MyFunction");
+			AddReturnTypeToMethod("System.String");
+			
+			CodeTypeRef2 typeRef = codeFunction.Type;
+			
+			Assert.AreEqual(codeFunction, typeRef.Parent);
 		}
 	}
 }

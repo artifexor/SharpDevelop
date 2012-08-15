@@ -4,9 +4,11 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+
 using ICSharpCode.Core;
-using SD = ICSharpCode.SharpDevelop.Project;
+using ICSharpCode.SharpDevelop.Dom;
 using ICSharpCode.SharpDevelop.Project;
+using SD = ICSharpCode.SharpDevelop.Project;
 
 namespace ICSharpCode.PackageManagement.EnvDTE
 {
@@ -27,12 +29,21 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 			Kind = GetKindFromFileProjectItemType();
 		}
 		
+		internal ProjectItem(MSBuildBasedProject project, IClass c)
+			: this(new Project(project), project.FindFile(c.CompilationUnit.FileName))
+		{
+		}
+		
 		string GetKindFromFileProjectItemType()
 		{
-			if (projectItem.ItemType == ItemType.Folder) {
+			if (IsDirectory) {
 				return Constants.VsProjectItemKindPhysicalFolder;
 			}
 			return Constants.VsProjectItemKindPhysicalFile;
+		}
+		
+		bool IsDirectory {
+			get { return projectItem.ItemType == ItemType.Folder; }
 		}
 		
 		public ProjectItem()
@@ -117,6 +128,41 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 		{
 			ContainingProject.DeleteFile(projectItem.FileName);
 			ContainingProject.Save();
+		}
+		
+		public FileCodeModel2 FileCodeModel {
+			get {
+				if (!IsDirectory) {
+					return new FileCodeModel2(ContainingProject, projectItem);
+				}
+				return null;
+			}
+		}
+		
+		internal string GetIncludePath(string fileName)
+		{
+			string relativeDirectory = ContainingProject.GetRelativePath(projectItem.FileName);
+			return Path.Combine(relativeDirectory, fileName);
+		}
+		
+		internal string GetIncludePath()
+		{
+			return projectItem.Include;
+		}
+		
+		public virtual void Remove()
+		{
+			ContainingProject.RemoveProjectItem(this);
+			ContainingProject.Save();
+		}
+		
+		internal FileProjectItem MSBuildProjectItem {
+			get { return projectItem; }
+		}
+		
+		public virtual string FileNames(short index)
+		{
+			return projectItem.FileName;
 		}
 	}
 }

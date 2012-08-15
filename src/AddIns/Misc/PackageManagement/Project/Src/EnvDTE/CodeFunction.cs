@@ -50,5 +50,13 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 		{
 			return new TextPoint(method.GetEndPosition(), documentLoader);
 		}
+		
+		public virtual CodeElements Parameters {
+			get { return new CodeParameters(method.ProjectContent, method.Parameters); }
+		}
+		
+		public virtual CodeTypeRef2 Type {
+			get { return new CodeTypeRef2(method.ProjectContent, this, method.ReturnType); }
+		}
 	}
 }

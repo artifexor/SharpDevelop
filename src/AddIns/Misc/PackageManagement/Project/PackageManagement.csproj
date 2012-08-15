@@ -79,6 +79,7 @@
     <Compile Include="Src\Design\FakePackageOperation.cs" />
     <Compile Include="Src\Design\FakeSelectedProject.cs" />
     <Compile Include="Src\DocumentLoader.cs" />
+    <Compile Include="Src\DocumentNamespaceCreator.cs" />
     <Compile Include="Src\DomRegionExtensions.cs" />
     <Compile Include="Src\EnvDTE\CodeAttribute.cs" />
     <Compile Include="Src\EnvDTE\CodeAttribute2.cs" />
@@ -95,14 +96,15 @@
     <Compile Include="Src\EnvDTE\CodeFunction.cs" />
     <Compile Include="Src\EnvDTE\CodeGetterFunction.cs" />
     <Compile Include="Src\EnvDTE\CodeGetterOrSetterFunction.cs" />
+    <Compile Include="Src\EnvDTE\CodeImport.cs" />
     <Compile Include="Src\EnvDTE\CodeInterface.cs" />
+    <Compile Include="Src\EnvDTE\CodeParameters.cs" />
     <Compile Include="Src\EnvDTE\CodeModel.cs" />
     <Compile Include="Src\EnvDTE\CodeModelLanguageConstants.cs" />
     <Compile Include="Src\EnvDTE\CodeNamespace.cs" />
     <Compile Include="Src\EnvDTE\CodeParameter.cs" />
     <Compile Include="Src\EnvDTE\CodeProperty.cs" />
     <Compile Include="Src\EnvDTE\CodeProperty2.cs" />
-    <Compile Include="Src\EnvDTE\CodePropertyParameters.cs" />
     <Compile Include="Src\EnvDTE\CodeSetterFunction.cs" />
     <Compile Include="Src\EnvDTE\CodeStruct.cs" />
     <Compile Include="Src\EnvDTE\CodeType.cs" />
@@ -115,6 +117,8 @@
     <Compile Include="Src\EnvDTE\Configuration.cs" />
     <Compile Include="Src\EnvDTE\Constants.cs" />
     <Compile Include="Src\EnvDTE\EditPoint.cs" />
+    <Compile Include="Src\EnvDTE\FileCodeModel2.cs" />
+    <Compile Include="Src\EnvDTE\FileCodeModelCodeElements.cs" />
     <Compile Include="Src\EnvDTE\ImplementedInterfacesOnClass.cs" />
     <Compile Include="Src\EnvDTE\IReturnTypeExtensions.cs" />
     <Compile Include="Src\EnvDTE\NamespaceName.cs" />
@@ -130,6 +134,7 @@
     <Compile Include="Src\EnvDTE\vsCMInfoLocation.cs" />
     <Compile Include="Src\EnvDTE\vsCMPropertyKind.cs" />
     <Compile Include="Src\EnvDTE\vsEPReplaceTextOptions.cs" />
+    <Compile Include="Src\IDocumentNamespaceCreator.cs" />
     <Compile Include="Src\IProjectBrowserUpdater.cs" />
     <Compile Include="Src\IRefactoringDocumentView.cs" />
     <Compile Include="Src\IFieldExtensions.cs" />

@@ -7,7 +7,7 @@ using Rhino.Mocks;
 
 namespace PackageManagement.Tests.Helpers
 {
-	public class MethodHelper
+	public class MethodHelper : MethodOrPropertyHelper
 	{
 		public IMethod Method;
 		public ProjectContentHelper ProjectContentHelper = new ProjectContentHelper();
@@ -20,6 +20,7 @@ namespace PackageManagement.Tests.Helpers
 			Method = MockRepository.GenerateMock<IMethod, IEntity>();
 			Method.Stub(m => m.ProjectContent).Return(ProjectContentHelper.ProjectContent);
 			Method.Stub(m => m.FullyQualifiedName).Return(fullyQualifiedName);
+			Method.Stub(m => m.Parameters).Return(parameters);
 		}
 		
 		public void CreatePublicMethod(string name)
@@ -101,6 +102,15 @@ namespace PackageManagement.Tests.Helpers
 		{
 			IClass declaringType = ProjectContentHelper.AddClassToProjectContent(name);
 			SetDeclaringType(declaringType);
+		}
+		
+		public void AddReturnTypeToMethod(string type)
+		{
+			var returnTypeHelper = new ReturnTypeHelper();
+			returnTypeHelper.CreateReturnType(type);
+			returnTypeHelper.AddDotNetName(type);
+			
+			Method.Stub(m => m.ReturnType).Return(returnTypeHelper.ReturnType);
 		}
 	}
 }
