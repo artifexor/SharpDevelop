@@ -2,6 +2,7 @@
 // This code is distributed under the GNU LGPL (for details please see \doc\license.txt)
 
 using System;
+using System.Collections.Generic;
 using SD = ICSharpCode.SharpDevelop.Project;
 
 namespace ICSharpCode.PackageManagement.EnvDTE
@@ -16,6 +17,7 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 			this.projectService = projectService;
 			this.solution = projectService.OpenSolution;
 			this.Projects = new Projects(projectService);
+			this.Globals = new SolutionGlobals(this);
 		}
 		
 		public string FullName {
@@ -31,5 +33,20 @@ namespace ICSharpCode.PackageManagement.EnvDTE
 		}
 		
 		public Projects Projects { get; private set; }
+		public Globals Globals { get; private set; }
+		
+		internal IList<SD.ProjectSection> Sections {
+			get { return solution.Sections; }
+		}
+		
+		internal void Save()
+		{
+			projectService.Save(solution);
+		}
+		
+		internal bool IsSameSolution(SD.Solution solution)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

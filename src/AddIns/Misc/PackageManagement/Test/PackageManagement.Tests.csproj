@@ -96,6 +96,7 @@
     <Compile Include="Src\EnvDTE\EditPointTests.cs" />
     <Compile Include="Src\EnvDTE\FileCodeModel2Tests.cs" />
     <Compile Include="Src\EnvDTE\NamespaceNameTests.cs" />
+    <Compile Include="Src\EnvDTE\SolutionGlobalsTests.cs" />
     <Compile Include="Src\EnvDTE\SolutionTests.cs" />
     <Compile Include="Src\Helpers\AttributeHelper.cs" />
     <Compile Include="Src\Helpers\ClassHelper.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Src\Helpers\PropertyHelper.cs" />
     <Compile Include="Src\Helpers\ReturnTypeHelper.cs" />
     <Compile Include="Src\Helpers\SelectedProjectCollectionAssert.cs" />
+    <Compile Include="Src\Helpers\SolutionHelper.cs" />
     <Compile Include="Src\Helpers\TestableInstalledPackageViewModel.cs" />
     <Compile Include="Src\Helpers\TestablePackageFromRepository.cs" />
     <Compile Include="Src\Helpers\TestableProjectBehaviour.cs" />
@@ -348,6 +350,10 @@
     <ProjectReference Include="..\..\..\DisplayBindings\AvalonEdit.AddIn\AvalonEdit.AddIn.csproj">
       <Project>{0162E499-42D0-409B-AA25-EED21F75336B}</Project>
       <Name>AvalonEdit.AddIn</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EnvDTEHelpers\Project\PackageManagement.EnvDTEHelpers.vbproj">
+      <Project>{F7886FB7-3764-4574-B981-25EB164B532E}</Project>
+      <Name>PackageManagement.EnvDTEHelpers</Name>
     </ProjectReference>
     <ProjectReference Include="..\PowerShell\Project\PackageManagement.PowerShell.csproj">
       <Project>{A406803B-C584-43A3-BCEE-A0BB3132CB5F}</Project>
