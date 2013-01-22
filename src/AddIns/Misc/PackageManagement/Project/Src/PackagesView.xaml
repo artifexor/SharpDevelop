@@ -26,6 +26,12 @@
 			<TextBlock Text="{Binding Path=Name}"/>
 		</DataTemplate>
 		
+		<DataTemplate x:Key="PackageDependencySetItemTemplate">
+			<Grid>
+				<ItemsControl ItemsSource="{Binding Path=Dependencies}"/>
+			</Grid>
+		</DataTemplate>
+		
 		<DataTemplate x:Key="PackageListBoxItemTemplate">
 			<Grid>
 				<Grid.ColumnDefinitions>
@@ -165,13 +171,13 @@
 					</StackPanel>
 					<StackPanel
 						Orientation="Horizontal"
-						Visibility="{Binding Path=HasLastUpdated, Converter={StaticResource BoolToVisibility}}"
+						Visibility="{Binding Path=HasLastPublished, Converter={StaticResource BoolToVisibility}}"
 						Margin="0, 4">
 						<TextBlock
 							Margin="0, 0, 4, 0"
-							Text="Last Updated:"
+							Text="Last Published:"
 							FontWeight="Bold"/>
-						<TextBlock Text="{Binding Path=LastUpdated, StringFormat=d}"/>
+						<TextBlock Text="{Binding Path=LastPublished, StringFormat=d}"/>
 					</StackPanel>
 					<StackPanel
 						Orientation="Horizontal"
@@ -233,6 +239,7 @@
 						</StackPanel>
 						<ItemsControl 
 							Margin="4, 4"
+							ItemTemplate="{StaticResource PackageDependencySetItemTemplate}"
 							ItemsSource="{Binding Path=Dependencies}"/>
 					</StackPanel>
 				</StackPanel>
@@ -303,7 +310,7 @@
 				<RowDefinition />
 			</Grid.RowDefinitions>
 			<Grid
-				Visibility="{Binding Path=IsSearchable, Converter={StaticResource BoolToVisibility}}">
+				Visibility="{Binding Path=ShowPackageSources, Converter={StaticResource BoolToVisibility}}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
 					<ColumnDefinition Width="Auto"/>
@@ -323,6 +330,7 @@
 				<TextBox
 					Grid.Row="1"
 					Grid.Column="0"
+					Visibility="{Binding Path=IsSearchable, Converter={StaticResource BoolToVisibility}}"
 					Text="{Binding Path=SearchTerms, UpdateSourceTrigger=PropertyChanged}">
 					<TextBox.InputBindings>
 						<KeyBinding
@@ -333,7 +341,8 @@
 				<TextBlock 
 					Grid.Row="1"
 					Grid.Column="1"
-					Margin="4">
+					Margin="4"
+					Visibility="{Binding Path=IsSearchable, Converter={StaticResource BoolToVisibility}}">
 					<Hyperlink 
 						TextDecorations="{x:Null}"
 						Command="{Binding Path=SearchCommand}">
